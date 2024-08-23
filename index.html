@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typewriter Effect with Duck Images</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-yellow-200">
+    <div class="text-center mt-36">
+        <h1 id="typewriter" class="text-2xl font-bold text-gray-800"></h1>
+    </div>
+
+    <div class="relative h-[200px] w-[200px] mx-auto mt-4">
+        <!-- Duck images -->
+        <img id="duck1" class="h-full w-full" src="duck1.png" alt="Duck 1" style="display: block;">
+        <img id="duck2" class="h-full w-full" src="duck2.png" alt="Duck 2" style="display: none;">
+    </div>
+
+    <script>
+        const textLines = [
+            "If 1000 people love you,",
+            "I'm one of them.",
+            "If 100 people love you,",
+            "I'm one of them.",
+            "If 10 people love you,",
+            "I'm one of them.",
+            "If 1 person loves you,",
+            "that person is me.",
+            "If nobody loves you,",
+            "that means I'm dead."
+        ];
+        let lineIndex = 0;
+        let charIndex = 0;
+        const typingSpeed = 100; // Speed of typing in milliseconds
+        const delayBetweenLines = 1000; // Delay before starting the next line in milliseconds
+        const delayBetweenRepeats = 1000; // Delay before restarting the typing effect
+        const linesPerCycle = 1; // Number of lines to display before clearing
+
+        function typeWriter() {
+            const typewriterElement = document.getElementById("typewriter");
+            const duck1Element = document.getElementById("duck1");
+            const duck2Element = document.getElementById("duck2");
+
+            // Check if the current line is not fully typed
+            if (charIndex < textLines[lineIndex].length) {
+                typewriterElement.innerHTML += textLines[lineIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            } else {
+                lineIndex++;
+
+                // Toggle duck image for the last two lines
+                if (lineIndex >= textLines.length - 1) {
+                    duck1Element.style.display = 'none';
+                    duck2Element.style.display = 'block';
+                } else {
+                    duck1Element.style.display = 'block';
+                    duck2Element.style.display = 'none';
+                }
+
+                // Check if the lines for the current cycle are done
+                if (lineIndex % linesPerCycle === 0) {
+                    setTimeout(() => {
+                        typewriterElement.innerHTML += "<br>";
+                        setTimeout(() => {
+                            // Clear the lines after a short delay
+                            typewriterElement.innerHTML = "";
+                            charIndex = 0;
+                            if (lineIndex >= textLines.length) {
+                                lineIndex = 0; // Reset to start the effect again
+                            }
+                            typeWriter();
+                        }, delayBetweenRepeats);
+                    }, delayBetweenLines);
+                } else if (lineIndex < textLines.length) {
+                    // Continue typing the next line
+                    setTimeout(() => {
+                        typewriterElement.innerHTML += "<br>";
+                        charIndex = 0;
+                        typeWriter();
+                    }, delayBetweenLines);
+                } else {
+                    // Reset if all lines are typed
+                    lineIndex = 0;
+                    charIndex = 0;
+                    setTimeout(typeWriter, delayBetweenRepeats);
+                }
+            }
+        }
+
+        // Start the typewriter effect on page load
+        window.onload = typeWriter;
+    </script>
+</body>
+</html>
